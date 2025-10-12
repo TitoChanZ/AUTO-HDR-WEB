@@ -12,7 +12,7 @@ var shaderCode;
 //   const response = await fetch(path);
 //   return await response.text();
 // }
-loadShader("/shader/shader.wgsl")
+loadShader("shader/shader.wgsl")
 
 async function loadShader(path) {
   const response = await fetch(path);

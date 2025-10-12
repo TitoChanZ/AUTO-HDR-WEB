@@ -2,7 +2,7 @@
 var inputImg = document.getElementById("imgLoader");
 var displayImg = document.querySelector("img");
 
-displayImg.src= "/image/image1.jpg"
+displayImg.src= "image/image1.jpg"
 
 
 
