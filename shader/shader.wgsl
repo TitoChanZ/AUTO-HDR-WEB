@@ -42,4 +42,3 @@ fn fs_main(in: VSOut) -> @location(0) vec4<f32> {
   // Aplicar a los colores
   // return vec4<f32>(color.r * ( pow(2.0, color.r)), color.g * ( pow(2.0, color.g)), color.b * ( pow(2.0, color.b)), color.a);
 }
-
