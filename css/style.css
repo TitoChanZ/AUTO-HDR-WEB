@@ -1,0 +1,156 @@
+*{
+  /* color: white; */
+}
+*:root{
+  color-scheme: dark light;
+}
+
+body {
+  margin: 0;
+  /* background: black; */
+}
+
+.nav{
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+}
+.loadFileContainer{
+  width: fit-content;
+  /* padding: 20px; */
+  background: rgb(255, 78, 255);
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.fileInputLoader{
+  position: absolute;
+  opacity: 0;
+}
+.loadFileContainer > label{
+  display: inline-block;
+  /* color: #f0f; */
+  margin: 0px 5px;
+  /* padding: 0 5px; */
+}
+
+h3{
+  margin: 0;
+}
+
+.layoutControlContainer{
+  /* padding: 20px; */
+  width: fit-content;
+}
+
+
+.layoutBtn{
+  padding: 5px 10px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 5px;
+}
+.layoutBtn.activeBtn{
+  background: #f0f;
+}
+
+
+.viewsContainer{
+  display: flex;
+  height: min-content;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  position: relative;
+}
+
+.fileViewer {
+  width: 50vw;
+  height: auto;
+  display: block;
+  user-select: none;
+  
+}
+
+canvas {
+  width: 50% ;
+  height: 100%;
+  /* aspect-ratio: 1/1; */
+  display: inline-block;
+  background: grey;
+}
+
+/* & Layout Estatus 1 */
+
+.layout1Status{
+  /* flex-direction: column; */
+}
+
+.layout1Status>.fileViewer{
+  width: 50vw;
+}
+.layout1Status>canvas{
+  width: 50vw !important;
+}
+
+
+
+/* & Layout Estatus 2 */
+
+.layout2Status{
+  flex-direction: column;
+}
+
+.layout2Status>.fileViewer{
+  width: 100vw;
+}
+.layout2Status>canvas{
+  width: 100vw !important;
+}
+
+/* & Layout Estatus 3 */
+
+.layout3Status{
+
+}
+
+.layout3Status>.fileViewer{
+  width: 100vw;
+
+}
+.layout3Status>canvas{
+  width: 50%;
+  position: absolute;
+  object-fit:cover;
+  object-position: 0 ;
+  overflow: hidden;
+  left: 0;
+}
+.layout3Status>.controlCompared{
+  display: inline-block;
+  height: 100%;
+  width: 10px;
+  background: #f0f;
+  position: absolute;
+  cursor:col-resize;
+  left: 50vw;
+  transform: translateX(-50%);
+}
+
+/* & Layout Estatus 4 */
+
+.layout4Status{
+
+}
+
+.layout4Status>.fileViewer{
+
+}
+.layout4Status>canvas{
+
+}

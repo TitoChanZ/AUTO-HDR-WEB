@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>WebGPU HDR Test</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="loadFileContainer">
+      <input type="file" id="videoLoader" class="fileInputLoader" accept="video/*">
+      <label for="videoLoader">Cargar video</label>
+    </div>
+
+    <h3 id="title">Vídeo 動画</h3>
+
+    <div class="layoutControlContainer" id="layoutControls">
+      <button id="layout1" class="layoutBtn activeBtn">L1</button>
+      <button id="layout2" class="layoutBtn">L2</button>
+      <button id="layout3" class="layoutBtn">L3</button>
+      <button id="layout4" class="layoutBtn">L4</button>
+    </div>
+  </nav>
+
+  
+
+
+  <div class="videoContainer">
+    <!-- <canvas id="gpuCanvas"></canvas> -->
+  </div>
+
+  <!-- <img src="https://cdn-images.dzcdn.net/images/artist/e16c3049f89ed842cabd0662012c2d33/1900x1900-000000-81-0-0.jpg" alt=""> -->
+  <!-- <canvas id="gpuCanvas"></canvas> -->
+ 
+  <section class="viewsContainer layout1Status" id="viewsContainer">
+    <video class="fileViewer" id="videoPlayer" autoplay loop muted playsinline controls></video>
+    <canvas id="gpuCanvas"></canvas>
+    <div class="controlCompared" id="controlCompared"></div>
+  </section>
+
+
+</body> 
+  <script src="/js/app.js" ></script>
+  <script type="module" src="/js/video.js">
+  </script>
+
+</html>
