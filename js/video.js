@@ -1,12 +1,57 @@
 var inputVideo = document.getElementById("videoLoader");
-
+var mainContainer = document.getElementById("mainContainer");
 const video = document.getElementById("videoPlayer");
 video.autoplay = true;
 video.loop = true;
 video.muted = true;
 video.playsInline = true;
-video.src = "video/video.mp4"; 
+video.src = "video/video.mp4";
 
+var videoControls = document.getElementById("videoControls")
+var currentTimeVideo = document.getElementById("currentTimeVideo")
+var inputTimer = document.getElementById("inputTimer")
+var durationVideo = document.getElementById("durationVideo")
+
+mainContainer.addEventListener("mousemove", () => {
+  ShowHide(3000)
+  // console.log("Movimiento")
+})
+
+inputTimer.addEventListener("input", () => {
+  video.currentTime = inputTimer.value;
+})
+
+// Detectar teclas pausar, flecha izquierda, fecha derecha.
+document.addEventListener("keydown", (event) => {
+  var keyValue = event.keyCode;
+  var codeValue = event.code;
+  if (codeValue === 'Space') {
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  } else if (keyValue === 37) {
+    video.currentTime -= 10;
+  } else if (keyValue === 39) {
+    video.currentTime += 10;
+  } else if (keyValue === 70) {
+    toggleFullScreen()
+  } else if (keyValue === 77) {
+    video.muted = !video.muted;
+  }
+
+  console.log("keyValue: " + keyValue);
+  console.log("codeValue: " + codeValue);
+});
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    mainContainer.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
 
 inputVideo.addEventListener("change", (event) => {
   const file = event.target.files[0];
@@ -15,15 +60,54 @@ inputVideo.addEventListener("change", (event) => {
     video.src = fileURL;
     video.load();
     video.play();
+    video.muted = false;
   }
 });
+
+let timeout;
+
+function startTimer(timerHide) {
+  // Establecer el temporizador para ocultar los controles después de WAIT_TIME miliSegundos
+  timeout = setTimeout(() => {
+    videoControls.style.opacity = "0"
+  }, timerHide);
+}
+
+function resetTimer(timerHide) {
+  // Reiniciar el temporizador
+  clearTimeout(timeout);
+  startTimer(timerHide);
+}
+
+function ShowHide(timerHide) {
+  videoControls.style.opacity = "1"
+  // Reiniciar el temporizador
+  resetTimer(timerHide);
+}
+
 
 // Cargar shader externo
 
 
 video.addEventListener("loadeddata", async () => {
   initHDRVideo(canvas, video, shaderCode);
+  var minute = Math.floor(video.duration / 60).toString().padStart(2, "0");
+  var second = Math.floor(video.duration - minute * 60).toString().padStart(2, "0");
+
+  // let hour = Math.floor(video.duration / 3600);
+  // let minute = Math.floor((video.duration - hour * 3600) / 60);
+  // let second = Math.floor(video.duration - hour * 3600 - minute * 60);
+  durationVideo.innerHTML = `${minute}:${second}`
+  inputTimer.max = video.duration;
 });
+
+video.addEventListener("timeupdate", () => {
+  var minute = Math.floor(video.currentTime / 60).toString().padStart(2, "0");
+  var second = Math.floor(video.currentTime - minute * 60).toString().padStart(2, "0");
+  currentTimeVideo.innerHTML = `${minute}:${second}`
+  inputTimer.value = video.currentTime
+  // inputTimer.value = Math.floor(video.currentTime);
+})
 
 async function initHDRVideo(canvas, videoElement, shaderCode) {
   if (!navigator.gpu) {
@@ -51,8 +135,8 @@ async function initHDRVideo(canvas, videoElement, shaderCode) {
     size: [videoElement.videoWidth || 640, videoElement.videoHeight || 360],
     format: "rgba8unorm",
     usage: GPUTextureUsage.TEXTURE_BINDING |
-           GPUTextureUsage.COPY_DST |
-           GPUTextureUsage.RENDER_ATTACHMENT,
+      GPUTextureUsage.COPY_DST |
+      GPUTextureUsage.RENDER_ATTACHMENT,
   });
 
   canvas.width = videoElement.videoWidth || 640;
