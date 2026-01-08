@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>WebGPU Auto HDR Imagen 画像</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
   <nav class="nav">
     <div class="loadFileContainer">
-      <input type="file" id="imgLoader"  class="fileInputLoader"  accept="image/*">
+      <input type="file" id="imgLoader" class="fileInputLoader" accept="image/*">
       <label for="imgLoader">Cargar imagen</label>
     </div>
 
@@ -21,18 +23,22 @@
       <button id="layout4" class="layoutBtn">L4</button>
     </div>
   </nav>
-  <section class="viewsContainer layout1Status" id="viewsContainer">
-    <img class="fileViewer" src="" alt="">
-    <canvas id="gpuCanvas"></canvas>
-    <div class="controlCompared" id="controlCompared"></div>
-  </section>
+  <main id="mainContainer">
 
-  
 
- 
- 
-</body> 
-  <script  src="js/app.js"></script>
-  <script type="module" src="js/image.js">
-  </script>
+    <section class="viewsContainer layout1Status" id="viewsContainer">
+      <img class="fileViewer" src="" alt="">
+      <canvas id="gpuCanvas"></canvas>
+      <div class="controlCompared" id="controlCompared"></div>
+    </section>
+
+  </main>
+
+
+
+</body>
+<script src="js/app.js"></script>
+<script type="module" src="js/image.js">
+</script>
+
 </html>
