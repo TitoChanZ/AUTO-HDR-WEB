@@ -18,6 +18,7 @@
     <h3 id="title">Vídeo 動画</h3>
 
     <div class="layoutControlContainer" id="layoutControls">
+      <button id="configurationBtn" command="configuration" class="layoutBtn configurationBtn">Ajustes</button>
       <button id="layout1" class="layoutBtn activeBtn">L1</button>
       <button id="layout2" class="layoutBtn">L2</button>
       <button id="layout3" class="layoutBtn">L3</button>
@@ -25,16 +26,45 @@
     </div>
   </nav>
 
-
-
-
-  <!-- <div class="videoContainer"> -->
-  <!-- <canvas id="gpuCanvas"></canvas> -->
-  <!-- </div> -->
-
-  <!-- <img src="https://cdn-images.dzcdn.net/images/artist/e16c3049f89ed842cabd0662012c2d33/1900x1900-000000-81-0-0.jpg" alt=""> -->
-  <!-- <canvas id="gpuCanvas"></canvas> -->
   <main id="mainContainer">
+
+    <dialog id="configurationPanel" class="dialogConfiguration" closedby="any" showModal="true">
+      <h2 title="Configuración de colores">Configuración 色(Iru)</h2>
+      <ul class="dialogList">
+        <li>
+          <select class="selectDialog" name="predefineValues" id="selectDialog">
+            <option value="glow">Brillo</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="nature">Natural</option>
+          </select>
+        </li>
+        <li class="configOption" id="configOption">
+          <input id="promCheck" type="checkbox" class="checkProm">
+          <label for="promCheck">X Promedio</label>
+          <input id="checkOther" type="checkbox" class="checkOther">
+          <label for="checkOther">Otro</label>
+        </li>
+        <li class="rangeColorOption" id="rangeColorOption">
+          <label for="rangeRed">R</label>
+          <input id="rangeRed" type="range" max="4" step="0.01" class="rangeColor">
+          <span id="rangeRedValue">2.00</span>
+        </li>
+        <li class="rangeColorOption" id="rangeColorOption">
+          <label for="rangeGreen">G</label>
+          <input id="rangeGreen" type="range" max="4" step="0.01" class="rangeColor">
+          <span class="rangeGrenValue">2.00</span>
+        </li>
+        <li class="rangeColorOption" id="rangeColorOption">
+          <label for="rangeBlue">B</label>
+          <input id="rangeBlue" type="range" max="4" step="0.01" class="rangeColor">
+          <span class="rangeBlueValue">2.00</span>
+        </li>
+        <li>
+          <button id="resetBtn">Reset</button>
+        </li>
+      </ul>
+    </dialog>
+
     <section class="viewsContainer layout1Status" id="viewsContainer">
       <video class="fileViewer" id="videoPlayer" autoplay loop muted playsinline></video>
       <canvas id="gpuCanvas"></canvas>
@@ -42,9 +72,18 @@
     </section>
 
     <section class="videoControls" id="videoControls">
-      <span id="currentTimeVideo" class="currentTimeVideo">00:00</span>
-      <input type="range" name="" id="inputTimer" class="inputTimer" step="0.1">
-      <span id="durationVideo" class="durationVideo">00:00</span>
+      <div class="btnContainer">
+        <button class="btnControl btnMute" id="btnMute"></button>
+        <button class="btnControl btnPrevious" id="btnPrevious"></button>
+        <button class="btnControl btnPlay" id="btnPlayPause"></button>
+        <button class="btnControl btnNext" id="btnNext"></button>
+        <button class="btnControl btnFullScreen" id="btnFullScreen"></button>
+      </div>
+      <div class="timelineContainer">
+        <span id="currentTimeVideo" class="currentTimeVideo">00:00</span>
+        <input type="range" name="" id="inputTimer" class="inputTimer" step="0.1">
+        <span id="durationVideo" class="durationVideo">00:00</span>
+      </div>
     </section>
   </main>
 

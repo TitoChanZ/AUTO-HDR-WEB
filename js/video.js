@@ -8,6 +8,12 @@ video.playsInline = true;
 video.src = "video/video.mp4";
 
 var videoControls = document.getElementById("videoControls")
+var btnMute = document.getElementById("btnMute")
+var btnPrevious = document.getElementById("btnPrevious")
+var btnPlayPause = document.getElementById("btnPlayPause")
+var btnNext = document.getElementById("btnNext")
+var btnFullScreen = document.getElementById("btnFullScreen")
+
 var currentTimeVideo = document.getElementById("currentTimeVideo")
 var inputTimer = document.getElementById("inputTimer")
 var durationVideo = document.getElementById("durationVideo")
@@ -17,14 +23,73 @@ mainContainer.addEventListener("mousemove", () => {
   // console.log("Movimiento")
 })
 
+btnMute.addEventListener("click", () => {
+  video.muted = !video.muted;
+  updateBtnIcons()
+})
+
+
+btnPrevious.addEventListener("click", () => {
+  video.currentTime -= 10;
+})
+
+btnPlayPause.addEventListener("click", () => {
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
+  updateBtnIcons()
+})
+
+btnNext.addEventListener("click", () => {
+  video.currentTime += 10;
+})
+
+btnFullScreen.addEventListener("click", () => {
+  toggleFullScreen()
+  updateBtnIcons()
+})
+
+function updateBtnIcons(){
+  if (video.paused) {
+    btnPlayPause.classList.remove("btnPause")
+    btnPlayPause.classList.add("btnPlay")
+  } else {
+    btnPlayPause.classList.remove("btnPlay")
+    btnPlayPause.classList.add("btnPause")
+  }
+  if (!video.muted) {
+    btnMute.classList.remove("btnMute")
+    btnMute.classList.add("btnUnMute")
+  } else {
+    btnMute.classList.remove("btnUnMute")
+    btnMute.classList.add("btnMute")
+  }
+  if (document.fullscreenElement) {
+    btnFullScreen.classList.remove("btnFullScreen")
+    btnFullScreen.classList.add("btnExitFullScreen")
+  } else {
+    btnFullScreen.classList.remove("btnExitFullScreen")
+    btnFullScreen.classList.add("btnFullScreen")
+  }
+  // console.log("Update")
+}
+
+btnNext.addEventListener("click", () => {
+  video.currentTime += 10;
+})
+
 inputTimer.addEventListener("input", () => {
   video.currentTime = inputTimer.value;
 })
 
 // Detectar teclas pausar, flecha izquierda, fecha derecha.
 document.addEventListener("keydown", (event) => {
+  event.preventDefault();
   var keyValue = event.keyCode;
   var codeValue = event.code;
+  keyboardEvent(keyValue, codeValue)
   if (codeValue === 'Space') {
     if (video.paused) {
       video.play();
@@ -40,7 +105,7 @@ document.addEventListener("keydown", (event) => {
   } else if (keyValue === 77) {
     video.muted = !video.muted;
   }
-
+  updateBtnIcons()
   console.log("keyValue: " + keyValue);
   console.log("codeValue: " + codeValue);
 });
@@ -61,6 +126,7 @@ inputVideo.addEventListener("change", (event) => {
     video.load();
     video.play();
     video.muted = false;
+
   }
 });
 
@@ -93,12 +159,16 @@ video.addEventListener("loadeddata", async () => {
   initHDRVideo(canvas, video, shaderCode);
   var minute = Math.floor(video.duration / 60).toString().padStart(2, "0");
   var second = Math.floor(video.duration - minute * 60).toString().padStart(2, "0");
-
   // let hour = Math.floor(video.duration / 3600);
   // let minute = Math.floor((video.duration - hour * 3600) / 60);
   // let second = Math.floor(video.duration - hour * 3600 - minute * 60);
   durationVideo.innerHTML = `${minute}:${second}`
   inputTimer.max = video.duration;
+
+  // video.play()
+  // updateBtnIcons()
+
+
 });
 
 video.addEventListener("timeupdate", () => {
@@ -106,6 +176,8 @@ video.addEventListener("timeupdate", () => {
   var second = Math.floor(video.currentTime - minute * 60).toString().padStart(2, "0");
   currentTimeVideo.innerHTML = `${minute}:${second}`
   inputTimer.value = video.currentTime
+  updateBtnIcons()
+  // console.log("Hola");
   // inputTimer.value = Math.floor(video.currentTime);
 })
 
@@ -116,8 +188,9 @@ async function initHDRVideo(canvas, videoElement, shaderCode) {
     return;
   }
   // const canvas = document.getElementById(canvasId);
-  const adapter = await navigator.gpu.requestAdapter();
-  const device = await adapter.requestDevice();
+  // const adapter = await navigator.gpu.requestAdapter();
+  // const device = await adapter.requestDevice();
+  await initGpu()
   const context = canvas.getContext("webgpu");
 
   const format = "rgba16float";
@@ -126,6 +199,7 @@ async function initHDRVideo(canvas, videoElement, shaderCode) {
     format,
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.TEXTURE_BINDING,
     colorSpace: "display-p3",
+    toneMapping: { mode: "extended" },
   });
 
   const sampler = device.createSampler({ magFilter: "linear", minFilter: "linear" });
@@ -155,7 +229,9 @@ async function initHDRVideo(canvas, videoElement, shaderCode) {
     layout: pipeline.getBindGroupLayout(0),
     entries: [
       { binding: 0, resource: sampler },
-      { binding: 1, resource: texture.createView() }
+      { binding: 1, resource: texture.createView() },
+      { binding: 2, resource: { buffer: paramsBuffer } },
+      { binding: 3, resource: { buffer: boolsBuffer } }
     ]
   });
 
