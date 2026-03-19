@@ -15,7 +15,7 @@ inputImg.addEventListener("change", (e) => {
 });
 
 displayImg.onload = () => {
-  // initHDRImage(canvas, displayImg.src, shaderCode);
+  initHDRImage(canvas, displayImg.src, shaderCode);
 };
 
 async function initHDRImage(canvas, imagePath, shaderCode) {
