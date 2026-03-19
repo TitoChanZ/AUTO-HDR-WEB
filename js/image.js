@@ -1,9 +1,7 @@
 var inputImg = document.getElementById("imgLoader");
 var displayImg = document.querySelector("img");
 
-displayImg.src= "../image/image1.jpg"
-
-
+displayImg.src = "image/image1.jpg";
 
 inputImg.addEventListener("change", (e) => {
   const file = e.target.files[0];
@@ -17,26 +15,16 @@ inputImg.addEventListener("change", (e) => {
 });
 
 displayImg.onload = () => {
-  initHDRImage(canvas, displayImg.src, shaderCode);
-}
-// setInterval(()=>{initHDRImage(canvas, displayImg.src, getShaderCode())},
-//   1000
-// )
-
-
-
-
+  // initHDRImage(canvas, displayImg.src, shaderCode);
+};
 
 async function initHDRImage(canvas, imagePath, shaderCode) {
   if (!navigator.gpu) {
     alert("Sin soporte para WebGPU");
-    setTitle("Error: Sin soporte para WebGPU")
+    setTitle("Error: Sin soporte para WebGPU");
     return;
   }
 
-  // const canvas = document.getElementById(canvasId);
-  // const adapter = await navigator.gpu.requestAdapter();
-  // const device = await adapter.requestDevice();
   await initGpu();
   const context = canvas.getContext("webgpu");
 
@@ -48,7 +36,7 @@ async function initHDRImage(canvas, imagePath, shaderCode) {
     colorSpace: "display-p3",
     toneMapping: { mode: "extended" },
   });
-  
+
   // Cargar imagen
   const img = new Image();
   img.src = imagePath;
@@ -60,26 +48,29 @@ async function initHDRImage(canvas, imagePath, shaderCode) {
   canvas.height = bitmap.height;
 
   // Crear textura desde la imagen
-
   const texture = device.createTexture({
     size: [bitmap.width, bitmap.height],
     format: "rgba8unorm",
-    usage: GPUTextureUsage.TEXTURE_BINDING |
-           GPUTextureUsage.COPY_DST |
-           GPUTextureUsage.RENDER_ATTACHMENT,
+    usage:
+      GPUTextureUsage.TEXTURE_BINDING |
+      GPUTextureUsage.COPY_DST |
+      GPUTextureUsage.RENDER_ATTACHMENT,
   });
 
   device.queue.copyExternalImageToTexture(
     { source: bitmap },
     { texture: texture },
-    [bitmap.width, bitmap.height]
+    [bitmap.width, bitmap.height],
   );
 
-  console.log(shaderCode)
-  // Shaders WGSL
-  const shader = device.createShaderModule({code: shaderCode});
+  const sampler = device.createSampler({
+    magFilter: "linear",
+    minFilter: "linear",
+  });
 
-  const sampler = device.createSampler({ magFilter: "linear", minFilter: "linear" });
+  console.log(shaderCode);
+  // Shaders WGSL
+  const shader = device.createShaderModule({ code: shaderCode });
 
   const pipeline = device.createRenderPipeline({
     layout: "auto",
@@ -87,9 +78,9 @@ async function initHDRImage(canvas, imagePath, shaderCode) {
     fragment: {
       module: shader,
       entryPoint: "fs_main",
-      targets: [{ format }]
+      targets: [{ format }],
     },
-    primitive: { topology: "triangle-list" }
+    primitive: { topology: "triangle-list" },
   });
 
   const bindGroup = device.createBindGroup({
@@ -98,22 +89,23 @@ async function initHDRImage(canvas, imagePath, shaderCode) {
       { binding: 0, resource: sampler },
       { binding: 1, resource: texture.createView() },
       { binding: 2, resource: { buffer: paramsBuffer } },
-      { binding: 3, resource: { buffer: boolsBuffer } }
-
-    ]
+      { binding: 3, resource: { buffer: boolsBuffer } },
+    ],
   });
 
   function frame() {
-    console.log()
+    console.log();
     const encoder = device.createCommandEncoder();
     const view = context.getCurrentTexture().createView();
     const pass = encoder.beginRenderPass({
-      colorAttachments: [{
-        view,
-        clearValue: { r: 0, g: 0, b: 0, a: 1 },
-        loadOp: "clear",
-        storeOp: "store"
-      }]
+      colorAttachments: [
+        {
+          view,
+          clearValue: { r: 0, g: 0, b: 0, a: 1 },
+          loadOp: "clear",
+          storeOp: "store",
+        },
+      ],
     });
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
@@ -125,4 +117,3 @@ async function initHDRImage(canvas, imagePath, shaderCode) {
 
   frame();
 }
-
